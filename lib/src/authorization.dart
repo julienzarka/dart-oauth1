@@ -31,12 +31,23 @@ class Authorization {
   /// http://tools.ietf.org/html/rfc5849#section-2.1
   ///
   /// If not callbackURI passed, authentication becomes PIN-based.
-  Future<AuthorizationResponse> requestTemporaryCredentials(
-      [String callbackURI]) async {
+  Future<AuthorizationResponse> requestTemporaryCredentials({
+    String callbackURI,
+    List<String> scopes,
+  }) async {
     callbackURI ??= 'oob';
-    final Map<String, String> additionalParams = <String, String>{
-      'oauth_callback': callbackURI
-    };
+    Map<String, String> additionalParams;
+    if (scopes == null || scopes.isEmpty) {
+      additionalParams = <String, String>{
+        'oauth_callback': callbackURI,
+      };
+    } else {
+      additionalParams = <String, String>{
+        'oauth_callback': callbackURI,
+        'scope': scopes.join(',')
+      };
+    }
+
     final AuthorizationHeaderBuilder ahb = AuthorizationHeaderBuilder();
     ahb.signatureMethod = _platform.signatureMethod;
     ahb.clientCredentials = _clientCredentials;
