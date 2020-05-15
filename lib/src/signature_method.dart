@@ -33,6 +33,17 @@ abstract class SignatureMethods {
     return base64.encode(bytes);
   });
 
+  static final SignatureMethod hmacSha256 =
+  SignatureMethod('HMAC-SHA256', (String key, String text) {
+    final Hmac hmac = Hmac(sha256, key.codeUnits);
+    final List<int> bytes = hmac.convert(text.codeUnits).bytes;
+
+    // The output of the HMAC signing function is a binary
+    // string. This needs to be base64 encoded to produce
+    // the signature string.
+    return base64.encode(bytes);
+  });
+
   /// http://tools.ietf.org/html/rfc5849#section-3.4.3
   /// TODO: Implement RSA-SHA1
 
